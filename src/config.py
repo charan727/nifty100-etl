@@ -1,12 +1,10 @@
 from pathlib import Path
-from dotenv import load_dotenv
-import os
 
-load_dotenv()
+BASE_DIR = Path(__file__).resolve().parent.parent
 
-DB_NAME = os.getenv("DB_NAME")
+CORE_DATA_PATH = BASE_DIR / "data" / "core"
+SUPPORTING_DATA_PATH = BASE_DIR / "data" / "supporting"
 
-CORE_DATA_PATH = Path(os.getenv("CORE_DATA_PATH"))
-SUPPORTING_DATA_PATH = Path(os.getenv("SUPPORTING_DATA_PATH"))
-DATABASE_PATH = Path(os.getenv("DATABASE_PATH"))
-OUTPUT_PATH = Path(os.getenv("OUTPUT_PATH"))
+DATABASE_PATH = BASE_DIR / "db" / "nifty100.db"
+
+OUTPUT_PATH = BASE_DIR / "output"

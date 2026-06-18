@@ -1,19 +1,81 @@
-from src.etl.loader import load_excel
+import pandas as pd
+from src.config import SUPPORTING_DATA_PATH
+from src.etl.loader import load_excel, load_to_database
+from src.etl.database import (
+    create_database,
+    create_connection,
+    execute_schema
+)
+from src.etl.normaliser import normalize_year, normalize_ticker
+from src.etl.validator import validate_dataframe
 
+print("=" * 60)
+print("NIFTY100 ETL PROJECT")
+print("=" * 60)
 
-def main():
-    print("=" * 50)
-    print("NIFTY100 ETL PROJECT")
-    print("=" * 50)
+# Create Database
+create_database()
 
-    companies = load_excel("companies.xlsx")
+# Create Tables
+execute_schema()
 
-    print("\nCompanies Dataset Loaded Successfully")
-    print(f"Shape : {companies.shape}")
+# Connect Database
+conn = create_connection()
+print("Database Connected Successfully!")
 
-    print("\nFirst 5 Records:")
-    print(companies.head())
+# Core Files
+core_files = [
+    "companies.xlsx",
+    "analysis.xlsx",
+    "balancesheet.xlsx",
+    "cashflow.xlsx",
+    "documents.xlsx",
+    "profitandloss.xlsx",
+    "prosandcons.xlsx"
+]
 
+# Supporting Files
+supporting_files = [
+    "financial_ratios.xlsx",
+    "peer_groups.xlsx",
+    "sectors.xlsx",
+    "stock_prices.xlsx"
+]
 
-if __name__ == "__main__":
-    main()
+# Load Core Files
+for file in core_files:
+
+    print(f"\nLoading {file}...")
+
+    df = load_excel(file)
+
+    df = normalize_year(df)
+    df = normalize_ticker(df)
+
+    validate_dataframe(df)
+
+    table_name = file.replace(".xlsx", "")
+
+    load_to_database(df, table_name, conn)
+
+# Load Supporting Files
+for file in supporting_files:
+
+    print(f"\nLoading {file}...")
+
+    df = pd.read_excel(SUPPORTING_DATA_PATH / file, header=1)
+
+    df = normalize_year(df)
+    df = normalize_ticker(df)
+
+    validate_dataframe(df)
+
+    table_name = file.replace(".xlsx", "")
+
+    load_to_database(df, table_name, conn)
+
+print("\nAll files loaded successfully.")
+
+conn.close()
+
+print("Database Connection Closed.")
