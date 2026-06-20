@@ -1,4 +1,3 @@
-
 import pandas as pd
 from src.config import SUPPORTING_DATA_PATH
 from src.etl.loader import load_excel, load_to_database
@@ -47,7 +46,9 @@ supporting_files = [
     "stock_prices.xlsx"
 ]
 
+# -----------------------------
 # Load Core Files
+# -----------------------------
 for file in core_files:
 
     print(f"\nLoading {file}...")
@@ -78,7 +79,9 @@ for file in core_files:
 
     load_to_database(df, table_name, conn)
 
+# -----------------------------
 # Load Supporting Files
+# -----------------------------
 for file in supporting_files:
 
     print(f"\nLoading {file}...")

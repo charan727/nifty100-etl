@@ -70,3 +70,28 @@ def validate_positive_values(df, column):
     else:
         print(f"[ERROR] {invalid} negative values found in {column}.")
         return False
+
+
+def validate_foreign_key(df, column, parent_df, parent_column):
+    """
+    DQ-03: Validate Foreign Key
+    """
+
+    if column not in df.columns:
+        print(f"[WARNING] {column} column not found.")
+        return True
+
+    if parent_column not in parent_df.columns:
+        print(f"[WARNING] {parent_column} column not found.")
+        return True
+
+    invalid = ~df[column].isin(parent_df[parent_column])
+
+    invalid_count = invalid.sum()
+
+    if invalid_count == 0:
+        print(f"[OK] Foreign Key validation passed for {column}.")
+        return True
+    else:
+        print(f"[ERROR] {invalid_count} invalid foreign keys found.")
+        return False
