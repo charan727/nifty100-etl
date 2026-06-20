@@ -38,7 +38,9 @@ def validate_primary_key(df, column):
     """
     Check whether the given column contains duplicate values.
     """
+
     if column not in df.columns:
+        print(f"[WARNING] {column} column not found.")
         return False
 
     duplicates = df[column].duplicated().sum()
@@ -48,4 +50,23 @@ def validate_primary_key(df, column):
         return True
     else:
         print(f"[ERROR] {duplicates} duplicate {column} values found.")
+        return False
+
+
+def validate_positive_values(df, column):
+    """
+    DQ-06: Check whether numeric column contains negative values.
+    """
+
+    if column not in df.columns:
+        print(f"[WARNING] {column} column not found.")
+        return True
+
+    invalid = (df[column] < 0).sum()
+
+    if invalid == 0:
+        print(f"[OK] {column} contains valid values.")
+        return True
+    else:
+        print(f"[ERROR] {invalid} negative values found in {column}.")
         return False

@@ -1,3 +1,4 @@
+
 import pandas as pd
 from src.config import SUPPORTING_DATA_PATH
 from src.etl.loader import load_excel, load_to_database
@@ -7,7 +8,11 @@ from src.etl.database import (
     execute_schema
 )
 from src.etl.normaliser import normalize_year, normalize_ticker
-from src.etl.validator import validate_dataframe
+from src.etl.validator import (
+    validate_dataframe,
+    validate_primary_key,
+    validate_positive_values
+)
 
 print("=" * 60)
 print("NIFTY100 ETL PROJECT")
@@ -52,7 +57,22 @@ for file in core_files:
     df = normalize_year(df)
     df = normalize_ticker(df)
 
+    # Data Quality Checks
     validate_dataframe(df)
+
+    if "id" in df.columns:
+        validate_primary_key(df, "id")
+
+    for column in [
+        "sales",
+        "net_profit",
+        "operating_profit",
+        "total_assets",
+        "total_liabilities",
+        "equity",
+        "eps"
+    ]:
+        validate_positive_values(df, column)
 
     table_name = file.replace(".xlsx", "")
 
@@ -68,7 +88,22 @@ for file in supporting_files:
     df = normalize_year(df)
     df = normalize_ticker(df)
 
+    # Data Quality Checks
     validate_dataframe(df)
+
+    if "id" in df.columns:
+        validate_primary_key(df, "id")
+
+    for column in [
+        "sales",
+        "net_profit",
+        "operating_profit",
+        "total_assets",
+        "total_liabilities",
+        "equity",
+        "eps"
+    ]:
+        validate_positive_values(df, column)
 
     table_name = file.replace(".xlsx", "")
 
