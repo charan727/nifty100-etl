@@ -86,7 +86,7 @@ for file in supporting_files:
 
     print(f"\nLoading {file}...")
 
-    df = pd.read_excel(SUPPORTING_DATA_PATH / file, header=1)
+    df = load_excel(file, data_type="supporting")
 
     df = normalize_year(df)
     df = normalize_ticker(df)

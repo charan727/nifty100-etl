@@ -12,7 +12,17 @@ def load_excel(file_name, data_type="core"):
     else:
         file_path = CORE_DATA_PATH / file_name
 
-    df = pd.read_excel(file_path, header=1)
+    # Different header rows
+    if file_name in [
+        "financial_ratios.xlsx",
+        "market_cap.xlsx",
+        "peer_groups.xlsx",
+        "sectors.xlsx",
+        "stock_prices.xlsx"
+    ]:
+        df = pd.read_excel(file_path, header=0)
+    else:
+        df = pd.read_excel(file_path, header=1)
 
     return df
 
@@ -22,12 +32,18 @@ def load_to_database(df, table_name, connection):
     Load DataFrame into SQLite table.
     """
 
+    # Remove existing records only (schema remains)
+    connection.execute(f"DELETE FROM {table_name}")
+
+    # Insert data into existing table
     df.to_sql(
         name=table_name,
         con=connection,
-        if_exists="replace",
+        if_exists="append",
         index=False
     )
+
+    connection.commit()
 
     print(f"{table_name} loaded successfully!")
 
