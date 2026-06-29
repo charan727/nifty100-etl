@@ -1,5 +1,5 @@
 import pandas as pd
-from src.config import SUPPORTING_DATA_PATH
+
 from src.etl.loader import load_excel, load_to_database
 from src.etl.database import (
     create_database,
@@ -13,21 +13,29 @@ from src.etl.validator import (
     validate_positive_values
 )
 
+# Sprint 2
+from src.etl.populate_financial_ratios import populate_financial_ratios
+
+
 print("=" * 60)
 print("NIFTY100 ETL PROJECT")
 print("=" * 60)
 
+# ------------------------------------
 # Create Database
-create_database()
+# ------------------------------------
 
-# Create Tables
+create_database()
 execute_schema()
 
-# Connect Database
 conn = create_connection()
+
 print("Database Connected Successfully!")
 
+# ------------------------------------
 # Core Files
+# ------------------------------------
+
 core_files = [
     "companies.xlsx",
     "analysis.xlsx",
@@ -38,7 +46,10 @@ core_files = [
     "prosandcons.xlsx"
 ]
 
+# ------------------------------------
 # Supporting Files
+# ------------------------------------
+
 supporting_files = [
     "financial_ratios.xlsx",
     "peer_groups.xlsx",
@@ -46,9 +57,10 @@ supporting_files = [
     "stock_prices.xlsx"
 ]
 
-# -----------------------------
+# ------------------------------------
 # Load Core Files
-# -----------------------------
+# ------------------------------------
+
 for file in core_files:
 
     print(f"\nLoading {file}...")
@@ -58,13 +70,12 @@ for file in core_files:
     df = normalize_year(df)
     df = normalize_ticker(df)
 
-    # Data Quality Checks
     validate_dataframe(df)
 
     if "id" in df.columns:
         validate_primary_key(df, "id")
 
-    for column in [
+    numeric_columns = [
         "sales",
         "net_profit",
         "operating_profit",
@@ -72,16 +83,19 @@ for file in core_files:
         "total_liabilities",
         "equity",
         "eps"
-    ]:
+    ]
+
+    for column in numeric_columns:
         validate_positive_values(df, column)
 
     table_name = file.replace(".xlsx", "")
 
     load_to_database(df, table_name, conn)
 
-# -----------------------------
+# ------------------------------------
 # Load Supporting Files
-# -----------------------------
+# ------------------------------------
+
 for file in supporting_files:
 
     print(f"\nLoading {file}...")
@@ -91,13 +105,12 @@ for file in supporting_files:
     df = normalize_year(df)
     df = normalize_ticker(df)
 
-    # Data Quality Checks
     validate_dataframe(df)
 
     if "id" in df.columns:
         validate_primary_key(df, "id")
 
-    for column in [
+    numeric_columns = [
         "sales",
         "net_profit",
         "operating_profit",
@@ -105,15 +118,30 @@ for file in supporting_files:
         "total_liabilities",
         "equity",
         "eps"
-    ]:
+    ]
+
+    for column in numeric_columns:
         validate_positive_values(df, column)
 
     table_name = file.replace(".xlsx", "")
 
     load_to_database(df, table_name, conn)
 
-print("\nAll files loaded successfully.")
+print("\nAll source files loaded successfully.")
+
+# ------------------------------------
+# Sprint 2 Financial Ratio Engine
+# ------------------------------------
+
+print("\nGenerating Financial Ratios...")
+
+try:
+    populate_financial_ratios()
+    print("Financial Ratios Generated Successfully!")
+
+except Exception as e:
+    print(f"Ratio Engine Failed : {e}")
 
 conn.close()
 
-print("Database Connection Closed.")
+print("\nDatabase Connection Closed.")

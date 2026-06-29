@@ -71,13 +71,13 @@ CREATE TABLE IF NOT EXISTS cashflow (
 CREATE TABLE IF NOT EXISTS documents (
     id INTEGER PRIMARY KEY,
     company_id TEXT,
-    Year INTEGER,
-    Annual_Report TEXT,
+    year INTEGER,
+    annual_report TEXT,
     FOREIGN KEY(company_id) REFERENCES companies(id)
 );
 
 -- ======================================================
--- PROFIT & LOSS
+-- PROFIT AND LOSS
 -- ======================================================
 CREATE TABLE IF NOT EXISTS profitandloss (
     id INTEGER PRIMARY KEY,
@@ -99,7 +99,7 @@ CREATE TABLE IF NOT EXISTS profitandloss (
 );
 
 -- ======================================================
--- PROS & CONS
+-- PROS AND CONS
 -- ======================================================
 CREATE TABLE IF NOT EXISTS prosandcons (
     id INTEGER PRIMARY KEY,
@@ -108,27 +108,57 @@ CREATE TABLE IF NOT EXISTS prosandcons (
     cons TEXT,
     FOREIGN KEY(company_id) REFERENCES companies(id)
 );
-
 -- ======================================================
 -- FINANCIAL RATIOS
 -- ======================================================
 CREATE TABLE IF NOT EXISTS financial_ratios (
-    id INTEGER PRIMARY KEY,
-    company_id TEXT,
-    year INTEGER,
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    company_id TEXT NOT NULL,
+    year INTEGER NOT NULL,
+
     net_profit_margin_pct REAL,
     operating_profit_margin_pct REAL,
     return_on_equity_pct REAL,
+    return_on_capital_employed_pct REAL,
+    return_on_assets_pct REAL,
+
     debt_to_equity REAL,
     interest_coverage REAL,
+    interest_coverage_label TEXT,
+    high_leverage_flag INTEGER,
     asset_turnover REAL,
+    net_debt_cr REAL,
+
     free_cash_flow_cr REAL,
     capex_cr REAL,
+    cash_from_operations_cr REAL,
+    fcf_conversion_pct REAL,
+    cfo_quality_score REAL,
+    cfo_quality_label TEXT,
+
     earnings_per_share REAL,
     book_value_per_share REAL,
     dividend_payout_ratio_pct REAL,
     total_debt_cr REAL,
-    cash_from_operations_cr REAL,
+
+    revenue_cagr_3yr REAL,
+    revenue_cagr_5yr REAL,
+    revenue_cagr_10yr REAL,
+
+    pat_cagr_3yr REAL,
+    pat_cagr_5yr REAL,
+    pat_cagr_10yr REAL,
+
+    eps_cagr_3yr REAL,
+    eps_cagr_5yr REAL,
+    eps_cagr_10yr REAL,
+
+    revenue_cagr_flag TEXT,
+    pat_cagr_flag TEXT,
+    eps_cagr_flag TEXT,
+
+    composite_quality_score REAL,
+
     FOREIGN KEY(company_id) REFERENCES companies(id)
 );
 
@@ -184,6 +214,6 @@ CREATE TABLE IF NOT EXISTS stock_prices (
     low_price REAL,
     close_price REAL,
     volume REAL,
-    adjusted_close TEXT,
+    adjusted_close REAL,
     FOREIGN KEY(company_id) REFERENCES companies(id)
 );
