@@ -86,3 +86,37 @@ The Power BI dashboard includes:
 - Financial Analysis
 - Balance Sheet Analysis
 - Profit & Loss Analysis
+---
+
+# Sprint 3 Completion Notes
+
+## Sprint 3 Status
+✅ Completed Successfully
+
+### Features Implemented
+
+- Financial Screener Engine
+- 6 Preset Screeners
+- Composite Quality Score
+- Screener Excel Export
+- Peer Percentile Engine
+- Radar Chart Generation
+- Peer Comparison Excel Report
+- Benchmark Company Highlight
+- Median Summary Row
+- SQLite Peer Percentiles
+- Unit Tests Passed
+
+### Dataset Limitation
+
+The provided financial_ratios dataset does not contain the following fields:
+
+- P/E Ratio
+- P/B Ratio
+- Dividend Yield
+- Market Capitalization
+- Sales
+
+Because these fields are unavailable in the source dataset, the related preset filters cannot be fully validated. The screener engine automatically applies all available filters and skips metrics that are not present in the dataset.
+
+This limitation belongs to the input dataset and not to the implementation.

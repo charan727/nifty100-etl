@@ -32,13 +32,26 @@ def load_to_database(df, table_name, connection):
     Load DataFrame into SQLite table.
     """
 
-    # Remove existing records only (schema remains)
+    print(f"\nLoading table : {table_name}")
+    print("Columns in Excel :", df.columns.tolist())
+
+    cursor = connection.cursor()
+
+    cursor.execute(f"PRAGMA table_info({table_name})")
+    db_columns = [row[1] for row in cursor.fetchall()]
+
+    print("Columns in DB :", db_columns)
+
+    # Keep only matching columns
+    common_columns = [c for c in df.columns if c in db_columns]
+
+    df = df[common_columns]
+
     connection.execute(f"DELETE FROM {table_name}")
 
-    # Insert data into existing table
     df.to_sql(
-        name=table_name,
-        con=connection,
+        table_name,
+        connection,
         if_exists="append",
         index=False
     )
@@ -46,15 +59,3 @@ def load_to_database(df, table_name, connection):
     connection.commit()
 
     print(f"{table_name} loaded successfully!")
-
-    audit = pd.DataFrame({
-        "table_name": [table_name],
-        "row_count": [len(df)]
-    })
-
-    audit.to_csv(
-        "output/load_audit.csv",
-        mode="a",
-        header=False,
-        index=False
-    )

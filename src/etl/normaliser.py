@@ -1,12 +1,26 @@
 import pandas as pd
 
+import pandas as pd
+
 
 def normalize_year(df):
-    """
-    Convert year column to integer.
-    """
+
     if "year" in df.columns:
-        df["year"] = pd.to_numeric(df["year"], errors="coerce").fillna(0).astype(int)
+
+        df["year"] = (
+            df["year"]
+            .astype(str)
+            .str.extract(r"(\d{4})")[0]
+        )
+
+        df["year"] = pd.to_numeric(
+            df["year"],
+            errors="coerce"
+        )
+
+        df = df.dropna(subset=["year"])
+
+        df["year"] = df["year"].astype(int)
 
     return df
 

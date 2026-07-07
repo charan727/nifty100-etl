@@ -135,12 +135,16 @@ print("\nAll source files loaded successfully.")
 
 print("\nGenerating Financial Ratios...")
 
+import traceback
+
 try:
     populate_financial_ratios()
     print("Financial Ratios Generated Successfully!")
 
 except Exception as e:
-    print(f"Ratio Engine Failed : {e}")
+    print("Ratio Engine Failed")
+    print(e)
+    traceback.print_exc()
 
 conn.close()
 
