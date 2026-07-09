@@ -38,9 +38,8 @@ class ScreenerEngine:
             ON fr.company_id = c.id
         """
         df = pd.read_sql(query, self.conn)
-
-        print("\n========== AVAILABLE COLUMNS ==========")
-        print(df.columns.tolist())
+    
+        
 
         return df
         
@@ -197,34 +196,3 @@ class ScreenerEngine:
 
         return df.reset_index(drop=True)
 
-
-if __name__ == "__main__":
-    engine = ScreenerEngine()
-
-presets = [
-    "quality_compounder",
-    "value_pick",
-    "growth_accelerator",
-    "dividend_champion",
-    "debt_free_bluechip",
-    "turnaround_watch"
-]
-
-print("=" * 60)
-print("PRESET VERIFICATION")
-print("=" * 60)
-
-for preset in presets:
-
-    df = engine.apply_filters(preset)
-
-    print(f"{preset:25} -> {len(df)} companies")
-    engine = ScreenerEngine()
-
-    result = engine.apply_filters(
-        "value_pick"
-    )
-
-    print(result.head())
-
-    print("\nRows Returned :", len(result))
