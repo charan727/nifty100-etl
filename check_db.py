@@ -1,21 +1,11 @@
-import sqlite3
+import pandas as pd
 
-conn = sqlite3.connect("db/nifty100.db")
-cursor = conn.cursor()
+df = pd.read_excel("data/supporting/sectors.xlsx")
 
-tables = [
-    "companies",
-    "market_cap",
-    "financial_ratios",
-    "sectors"
-]
+print(df.head())
 
-print("\nTable Counts")
-print("-" * 30)
+print("\nColumns:\n")
 
-for table in tables:
-    cursor.execute(f"SELECT COUNT(*) FROM {table}")
-    count = cursor.fetchone()[0]
-    print(f"{table:20} : {count}")
+print(df.columns.tolist())
 
-conn.close()
+print("\nRows:", len(df))

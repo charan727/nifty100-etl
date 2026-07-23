@@ -134,11 +134,11 @@ CREATE TABLE IF NOT EXISTS financial_ratios (
     cash_from_operations_cr REAL,
     fcf_conversion_pct REAL,
     cfo_quality_score REAL,
-    cfo_quality_label TEXT,
-    cfo_sign
-cfi_sign
-cff_sign
-pattern_label
+cfo_quality_label TEXT,
+cfo_sign TEXT,
+cfi_sign TEXT,
+cff_sign TEXT,
+pattern_label TEXT,
 
     earnings_per_share REAL,
     book_value_per_share REAL,

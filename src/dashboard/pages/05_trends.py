@@ -1,94 +1,156 @@
 import streamlit as st
 import plotly.express as px
-import pandas as pd
 
-from src.dashboard.utils.db import (
+from dashboard.utils.db import (
     get_companies,
     get_ratios
 )
 
+st.set_page_config(
+    page_title="Trend Analysis",
+    layout="wide"
+)
+
 st.title("Trend Analysis")
 
+# ---------------------------------------
+# Load Data
+# ---------------------------------------
+
 companies = get_companies()
+ratios = get_ratios()
 
-company_list = sorted(companies["id"].dropna().unique())
+if companies.empty or ratios.empty:
+    st.error("Data not available.")
+    st.stop()
 
-ticker = st.selectbox(
+companies = companies.rename(
+    columns={
+        "id": "company_id"
+    }
+)
+
+ratios = ratios.merge(
+    companies[
+        [
+            "company_id",
+            "company_name"
+        ]
+    ],
+    on="company_id",
+    how="left"
+)
+
+# ---------------------------------------
+# Company Selection
+# ---------------------------------------
+
+company_list = sorted(
+    ratios["company_name"]
+    .dropna()
+    .unique()
+)
+
+selected_company = st.selectbox(
     "Select Company",
     company_list
 )
 
-ratios = get_ratios(ticker)
+company_data = ratios[
+    ratios["company_name"] == selected_company
+].copy()
 
-if ratios.empty:
+if company_data.empty:
     st.warning("No data available.")
     st.stop()
 
-ratios = ratios.sort_values("year").fillna(0)
+company_data = (
+    company_data
+    .sort_values("year")
+    .drop_duplicates(
+        subset=["company_id", "year"],
+        keep="last"
+    )
+    .fillna(0)
+)
 
-latest = ratios.iloc[-1]
+latest = company_data.iloc[-1]
 
-st.subheader(f"Company : {ticker}")
+# ---------------------------------------
+# KPI Cards
+# ---------------------------------------
 
-col1, col2, col3, col4 = st.columns(4)
+st.subheader(selected_company)
 
-col1.metric(
+c1, c2, c3, c4 = st.columns(4)
+
+c1.metric(
     "ROE",
-    round(latest.get("return_on_equity_pct", 0), 2)
+    round(latest["return_on_equity_pct"], 2)
 )
 
-col2.metric(
+c2.metric(
     "ROCE",
-    round(latest.get("return_on_capital_employed_pct", 0), 2)
+    round(latest["return_on_capital_employed_pct"], 2)
 )
 
-col3.metric(
+c3.metric(
     "Net Profit Margin",
-    round(latest.get("net_profit_margin_pct", 0), 2)
+    round(latest["net_profit_margin_pct"], 2)
 )
 
-col4.metric(
+c4.metric(
     "Debt / Equity",
-    round(latest.get("debt_to_equity", 0), 2)
+    round(latest["debt_to_equity"], 2)
 )
 
-chart_columns = [
+# ---------------------------------------
+# Trend Charts
+# ---------------------------------------
+
+charts = [
     ("return_on_equity_pct", "ROE Trend"),
     ("return_on_capital_employed_pct", "ROCE Trend"),
-    ("net_profit_margin_pct", "Net Profit Margin Trend"),
-    ("debt_to_equity", "Debt To Equity Trend"),
-    ("revenue_cagr_5yr", "Revenue CAGR Trend"),
-    ("pat_cagr_5yr", "PAT CAGR Trend"),
-    ("free_cash_flow_cr", "Free Cash Flow Trend")
+    ("net_profit_margin_pct", "Net Profit Margin"),
+    ("debt_to_equity", "Debt to Equity"),
+    ("free_cash_flow_cr", "Free Cash Flow"),
+    ("revenue_cagr_5yr", "Revenue CAGR 5Y"),
+    ("pat_cagr_5yr", "PAT CAGR 5Y")
 ]
 
-for column, title in chart_columns:
+for col, title in charts:
+
+    if col not in company_data.columns:
+        continue
 
     st.divider()
+
     st.subheader(title)
 
-    if column in ratios.columns:
+    fig = px.line(
+        company_data,
+        x="year",
+        y=col,
+        markers=True
+    )
 
-        fig = px.line(
-            ratios,
-            x="year",
-            y=column,
-            markers=True
-        )
+    st.plotly_chart(
+        fig,
+        use_container_width=True
+    )
 
-        st.plotly_chart(
-            fig,
-            use_container_width=True
-        )
-
-    else:
-        st.info(f"{column} not available.")
+# ---------------------------------------
+# Financial History
+# ---------------------------------------
 
 st.divider()
 
 st.subheader("Financial History")
 
 st.dataframe(
-    ratios,
-    use_container_width=True
+    company_data,
+    use_container_width=True,
+    hide_index=True
 )
+
+st.success("Trend Analysis Loaded Successfully")

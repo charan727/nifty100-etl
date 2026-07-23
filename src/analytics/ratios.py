@@ -95,7 +95,7 @@ class FinancialRatios:
         ratio = FinancialRatios.debt_to_equity(borrowings, equity_capital, reserves)
         if ratio is None:
             return False
-        return ratio > 5 and (sector or "").lower() != "financials"
+        return ratio > 2 and (sector or "").lower() != "financials"
 
     @staticmethod
     def interest_coverage(operating_profit, other_income, interest):
@@ -109,7 +109,9 @@ class FinancialRatios:
 
     @staticmethod
     def interest_coverage_label(interest):
-        return "Debt Free" if interest in (None,0) else ""
+        if interest in (None, 0):
+            return "Debt Free"
+        return "Interest Bearing"
 
     @staticmethod
     def interest_warning(icr):

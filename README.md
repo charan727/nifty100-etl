@@ -1,42 +1,69 @@
-# Nifty100 ETL Pipeline
+# Nifty100 Financial Analytics Platform
 
 ## Project Overview
 
-This project builds an ETL pipeline for Nifty100 financial data. It extracts data from Excel files, performs normalization and validation, and loads the cleaned data into a SQLite database. SQL queries and Power BI are used for analysis and visualization.
+The Nifty100 Financial Analytics Platform is an end-to-end data engineering and financial analytics project built using Python, SQLite, Pandas, Plotly, and Streamlit.
+
+The project extracts financial data from Excel files, performs data normalization and quality validation, loads the processed data into a SQLite database, calculates more than 50 financial KPIs, and provides an interactive dashboard for financial analysis, stock screening, peer comparison, trend analysis, and valuation.
 
 ---
 
 ## Features
 
-- Load Excel source files
-- Normalize data
-- Perform data quality validation
-- Load data into SQLite
-- Execute SQL queries
-- Build Power BI dashboard
-- Run unit tests
+- ETL Pipeline for Excel Financial Data
+- Data Normalization
+- Data Quality Validation
+- SQLite Database Integration
+- Financial Ratio Engine
+- CAGR Calculation Engine
+- Composite Quality Score
+- Stock Screener
+- Peer Comparison
+- Trend Analysis
+- Sector Analysis
+- Capital Analysis
+- Valuation Engine
+- Interactive Streamlit Dashboard
+- Interactive Plotly Visualizations
+- CSV Report Export
+- Unit Testing using Pytest
 
 ---
 
-## Folder Structure
-
-- data/
-- src/
-- db/
-- tests/
-- output/
-- notebooks/
-
----
-
-## Technologies Used
+## Technology Stack
 
 - Python
 - Pandas
+- NumPy
 - SQLite
 - SQL
+- Streamlit
+- Plotly
+- OpenPyXL
 - Pytest
-- Power BI
+
+---
+
+## Project Structure
+
+```
+nifty100-etl/
+│
+├── data/
+├── db/
+├── notebooks/
+├── output/
+├── src/
+│   ├── analytics/
+│   ├── dashboard/
+│   ├── etl/
+│   ├── validation/
+│   └── utils/
+├── tests/
+├── requirements.txt
+├── README.md
+└── main.py
+```
 
 ---
 
@@ -56,67 +83,197 @@ This project builds an ETL pipeline for Nifty100 financial data. It extracts dat
 
 ---
 
-## Data Quality Checks
+## Data Quality Validation
 
-- Empty Data Check
-- Duplicate Check
-- Missing Values Check
+The following validation rules are implemented:
+
+- Empty Data Validation
+- Duplicate Record Validation
+- Missing Value Validation
 - Row Count Validation
 - Column Count Validation
 
 ---
 
+## Financial KPIs
+
+The project calculates more than 50 financial KPIs, including:
+
+- Return on Equity (ROE)
+- Return on Capital Employed (ROCE)
+- Net Profit Margin
+- Operating Profit Margin
+- Debt-to-Equity Ratio
+- Interest Coverage Ratio
+- Revenue CAGR
+- PAT CAGR
+- Free Cash Flow
+- Composite Quality Score
+
+---
+
+## Dashboard Modules
+
+- Home Dashboard
+- Company Profile
+- Stock Screener
+- Peer Comparison
+- Trend Analysis
+- Sector Analysis
+- Capital Analysis
+- Reports Center
+
+---
+
+## Project Architecture
+
+```
+Excel Source Files
+        │
+        ▼
+ETL Pipeline
+        │
+        ▼
+Data Validation
+        │
+        ▼
+Data Normalization
+        │
+        ▼
+SQLite Database
+        │
+        ▼
+Financial Ratio Engine
+        │
+        ▼
+Analytics Engine
+        │
+        ▼
+Streamlit Dashboard
+```
+
+---
+
 ## Testing
 
-Run the following command:
+Run all unit tests using:
 
 ```bash
 pytest
 ```
 
-All unit tests passed successfully.
+All **22 unit tests** passed successfully.
 
 ---
 
-## Dashboard
+## Sprint 1
 
-The Power BI dashboard includes:
+### Status
 
-- Overview
-- Financial Analysis
-- Balance Sheet Analysis
-- Profit & Loss Analysis
+Completed Successfully
+
+### Deliverables
+
+- Environment Setup
+- Excel Data Loader
+- Data Normalization
+- SQLite Database Integration
+- Data Quality Validation
+
 ---
 
-# Sprint 3 Completion Notes
+## Sprint 2
 
-## Sprint 3 Status
-✅ Completed Successfully
+### Status
 
-### Features Implemented
+Completed Successfully
+
+### Deliverables
+
+- Financial Ratio Engine
+- CAGR Engine
+- Cash Flow KPIs
+- Financial Ratios Table
+- Automated KPI Population
+
+---
+
+## Sprint 3
+
+### Status
+
+Completed Successfully
+
+### Deliverables
 
 - Financial Screener Engine
-- 6 Preset Screeners
 - Composite Quality Score
-- Screener Excel Export
 - Peer Percentile Engine
 - Radar Chart Generation
-- Peer Comparison Excel Report
+- Peer Comparison Report
 - Benchmark Company Highlight
-- Median Summary Row
 - SQLite Peer Percentiles
-- Unit Tests Passed
 
 ### Dataset Limitation
 
-The provided financial_ratios dataset does not contain the following fields:
+The source financial dataset does not contain the following market-based metrics:
 
-- P/E Ratio
-- P/B Ratio
+- Price-to-Earnings (P/E) Ratio
+- Price-to-Book (P/B) Ratio
 - Dividend Yield
 - Market Capitalization
 - Sales
 
-Because these fields are unavailable in the source dataset, the related preset filters cannot be fully validated. The screener engine automatically applies all available filters and skips metrics that are not present in the dataset.
+The application automatically skips unavailable metrics while applying screening filters.
 
-This limitation belongs to the input dataset and not to the implementation.
+---
+
+## Sprint 4
+
+### Status
+
+Completed Successfully
+
+### Deliverables
+
+- Interactive Streamlit Dashboard
+- Company Profile
+- Stock Screener
+- Peer Comparison
+- Trend Analysis
+- Sector Analysis
+- Capital Analysis
+- Reports Center
+- Interactive Plotly Charts
+- CSV Report Export
+- Valuation Summary
+
+---
+
+## Project Statistics
+
+| Item | Count |
+|------|------:|
+| Source Excel Files | 12 |
+| Database Tables | 11 |
+| Dashboard Pages | 8 |
+| Financial KPIs | 50+ |
+| Unit Tests | 22 Passed |
+
+---
+
+## Future Enhancements
+
+- Live NSE/BSE Data Integration
+- Portfolio Tracking
+- User Authentication
+- REST API Development
+- Email Notifications
+- Machine Learning Based Stock Recommendation
+- Cloud Deployment using AWS or Azure
+
+---
+
+## Author
+
+Developed as a Financial Analytics and Data Engineering Capstone Project using Python, SQLite, Streamlit, and Plotly.

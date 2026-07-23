@@ -2,7 +2,7 @@ import sqlite3
 import pandas as pd
 import streamlit as st
 
-from src.config import DATABASE_PATH
+from config import DATABASE_PATH
 
 
 # -------------------------------------------------------
@@ -44,6 +44,9 @@ def get_ratios(ticker=None, year=None):
     df = pd.read_sql(query, conn, params=params)
 
     conn.close()
+
+    
+    
 
     return df
 

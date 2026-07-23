@@ -23,18 +23,21 @@ class CashflowKPIs:
         """
         CFO Quality Score
         """
-        if pat is None or pat == 0:
-            return None
 
-        ratio = cfo / pat
+        cfo = 0 if cfo is None else cfo
+
+        if pat is None or pat == 0:
+            return 0.0, "Insufficient Data"
+
+        ratio = abs(cfo / pat)
 
         if ratio > 1:
-            return ratio, "High Quality"
+            return round(ratio, 2), "High Quality"
 
         elif ratio >= 0.5:
-            return ratio, "Moderate"
+            return round(ratio, 2), "Moderate"
 
-        return ratio, "Accrual Risk"
+        return round(ratio, 2), "Accrual Risk"
 
     @staticmethod
     def capex_intensity(investing_activity, sales):
