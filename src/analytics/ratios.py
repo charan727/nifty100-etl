@@ -102,7 +102,10 @@ class FinancialRatios:
         try:
             if interest is None or interest == 0:
                 return None
-            return round(((operating_profit or 0)+(other_income or 0))/interest,2)
+            return round(
+    ((operating_profit or 0) + (other_income or 0)) / interest,
+    2
+)
         except Exception as e:
             logging.error(f"Interest Coverage Error: {e}")
             return None
@@ -146,3 +149,106 @@ class FinancialRatios:
         if dividend_payout is None:
             return None
         return round(dividend_payout,2)
+
+
+    @staticmethod
+    def dividend_yield(dividend_per_share, market_price):
+        try:
+            if market_price is None or market_price == 0:
+                return None
+            return round((dividend_per_share / market_price) * 100, 2)
+        except Exception as e:
+            logging.error(f"Dividend Yield Error: {e}")
+            return None
+
+    @staticmethod
+    def earnings_per_share(net_profit, shares_outstanding):
+        try:
+            if shares_outstanding is None or shares_outstanding == 0:
+                return None
+            return round(net_profit / shares_outstanding, 2)
+        except Exception as e:
+            logging.error(f"EPS Error: {e}")
+            return None
+
+    @staticmethod
+    def current_ratio(current_assets, current_liabilities):
+        try:
+            if current_liabilities is None or current_liabilities == 0:
+                return None
+            return round(current_assets / current_liabilities, 2)
+        except Exception as e:
+            logging.error(f"Current Ratio Error: {e}")
+            return None
+
+    @staticmethod
+    def quick_ratio(current_assets, inventory, current_liabilities):
+        try:
+            if current_liabilities is None or current_liabilities == 0:
+                return None
+            return round((current_assets - (inventory or 0)) / current_liabilities, 2)
+        except Exception as e:
+            logging.error(f"Quick Ratio Error: {e}")
+            return None
+
+    @staticmethod
+    def working_capital(current_assets, current_liabilities):
+        return round((current_assets or 0) - (current_liabilities or 0), 2)
+
+    @staticmethod
+    def debt_ratio(total_liabilities, total_assets):
+        try:
+            if total_assets is None or total_assets == 0:
+                return None
+            return round(total_liabilities / total_assets, 2)
+        except Exception as e:
+            logging.error(f"Debt Ratio Error: {e}")
+            return None
+
+    @staticmethod
+    def equity_ratio(total_equity, total_assets):
+        try:
+            if total_assets is None or total_assets == 0:
+                return None
+            return round(total_equity / total_assets, 2)
+        except Exception as e:
+            logging.error(f"Equity Ratio Error: {e}")
+            return None
+
+    @staticmethod
+    def price_to_earnings(market_price, eps):
+        try:
+            if eps is None or eps == 0:
+                return None
+            return round(market_price / eps, 2)
+        except Exception as e:
+            logging.error(f"P/E Error: {e}")
+            return None
+
+    @staticmethod
+    def price_to_book(market_price, book_value_per_share):
+        try:
+            if book_value_per_share is None or book_value_per_share == 0:
+                return None
+            return round(market_price / book_value_per_share, 2)
+        except Exception as e:
+            logging.error(f"P/B Error: {e}")
+            return None
+
+    @staticmethod
+    def enterprise_value(market_cap, total_debt, cash):
+        try:
+            return round((market_cap or 0) + (total_debt or 0) - (cash or 0), 2)
+        except Exception as e:
+            logging.error(f"Enterprise Value Error: {e}")
+            return None
+
+    @staticmethod
+    def ev_to_ebitda(enterprise_value, ebitda):
+        try:
+            if ebitda is None or ebitda == 0:
+                return None
+            return round(enterprise_value / ebitda, 2)
+        except Exception as e:
+            logging.error(f"EV/EBITDA Error: {e}")
+            return None

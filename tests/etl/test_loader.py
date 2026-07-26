@@ -1,67 +1,110 @@
+import pandas as pd
+import pytest
+
 from src.etl.loader import load_excel
 
 
-def test_load_companies():
-    df = load_excel("companies.xlsx")
+# ----------------------------
+# Core Data Files
+# ----------------------------
+
+CORE_FILES = [
+    "companies.xlsx",
+    "analysis.xlsx",
+    "balancesheet.xlsx",
+    "cashflow.xlsx",
+    "documents.xlsx",
+    "profitandloss.xlsx",
+    "prosandcons.xlsx",
+]
+
+
+# ----------------------------
+# Supporting Files
+# ----------------------------
+
+SUPPORTING_FILES = [
+    "financial_ratios.xlsx",
+    "peer_groups.xlsx",
+    "sectors.xlsx",
+    "stock_prices.xlsx",
+]
+
+
+# ----------------------------
+# Core File Tests
+# ----------------------------
+
+@pytest.mark.parametrize("file_name", CORE_FILES)
+def test_load_core_files(file_name):
+    df = load_excel(file_name)
+
     assert df is not None
-    assert len(df) > 0
+    assert isinstance(df, pd.DataFrame)
+    assert not df.empty
+    assert len(df.columns) > 0
 
 
-def test_load_analysis():
-    df = load_excel("analysis.xlsx")
+# ----------------------------
+# Supporting File Tests
+# ----------------------------
+
+@pytest.mark.parametrize("file_name", SUPPORTING_FILES)
+def test_load_supporting_files(file_name):
+    df = load_excel(file_name, "supporting")
+
     assert df is not None
-    assert len(df) > 0
+    assert isinstance(df, pd.DataFrame)
+    assert not df.empty
+    assert len(df.columns) > 0
 
 
-def test_load_balancesheet():
-    df = load_excel("balancesheet.xlsx")
-    assert df is not None
-    assert len(df) > 0
+# ----------------------------
+# DataFrame Validation
+# ----------------------------
+
+@pytest.mark.parametrize(
+    "file_name,folder",
+    [(f, None) for f in CORE_FILES] +
+    [(f, "supporting") for f in SUPPORTING_FILES]
+)
+def test_dataframe_is_valid(file_name, folder):
+
+    if folder:
+        df = load_excel(file_name, folder)
+    else:
+        df = load_excel(file_name)
+
+    assert isinstance(df, pd.DataFrame)
+    assert df.shape[0] > 0
+    assert df.shape[1] > 0
 
 
-def test_load_cashflow():
-    df = load_excel("cashflow.xlsx")
-    assert df is not None
-    assert len(df) > 0
+@pytest.mark.parametrize(
+    "file_name,folder",
+    [(f, None) for f in CORE_FILES] +
+    [(f, "supporting") for f in SUPPORTING_FILES]
+)
+def test_dataframe_has_column_names(file_name, folder):
+
+    if folder:
+        df = load_excel(file_name, folder)
+    else:
+        df = load_excel(file_name)
+
+    assert all(str(col).strip() != "" for col in df.columns)
 
 
-def test_load_documents():
-    df = load_excel("documents.xlsx")
-    assert df is not None
-    assert len(df) > 0
+@pytest.mark.parametrize(
+    "file_name,folder",
+    [(f, None) for f in CORE_FILES] +
+    [(f, "supporting") for f in SUPPORTING_FILES]
+)
+def test_dataframe_not_all_null(file_name, folder):
 
+    if folder:
+        df = load_excel(file_name, folder)
+    else:
+        df = load_excel(file_name)
 
-def test_load_profitandloss():
-    df = load_excel("profitandloss.xlsx")
-    assert df is not None
-    assert len(df) > 0
-
-
-def test_load_prosandcons():
-    df = load_excel("prosandcons.xlsx")
-    assert df is not None
-    assert len(df) > 0
-
-
-def test_load_financial_ratios():
-    df = load_excel("financial_ratios.xlsx", "supporting")
-    assert df is not None
-    assert len(df) > 0
-
-
-def test_load_peer_groups():
-    df = load_excel("peer_groups.xlsx", "supporting")
-    assert df is not None
-    assert len(df) > 0
-
-
-def test_load_sectors():
-    df = load_excel("sectors.xlsx", "supporting")
-    assert df is not None
-    assert len(df) > 0
-
-
-def test_load_stock_prices():
-    df = load_excel("stock_prices.xlsx", "supporting")
-    assert df is not None
-    assert len(df) > 0
+    assert not df.isnull().all().all()
